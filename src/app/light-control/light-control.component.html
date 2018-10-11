@@ -1,0 +1,14 @@
+<h1>Control your light</h1>
+
+<p>Press bulb if you want to switch on or switch off light</p>
+
+<div class="lightsControlContener"  *ngFor="let lightBulb of lightSignalRService.lightBulbList">
+
+<div *ngIf="lightBulb.LightStatus==false">
+  <button (click)="lightUp(true,lightBulb.ID)"><img class="lightPhoto" src="https://i.imgur.com/Bv00NKN.jpg" width="130" height="150"/> </button>
+</div>
+
+<div *ngIf="lightBulb.LightStatus==true">
+  <button (click)="lightUp(false,lightBulb.ID)"><img class="lightPhoto" src="https://i.imgur.com/ALXlAA3.png" width="130" height="150" />  </button>
+</div>
+</div>
