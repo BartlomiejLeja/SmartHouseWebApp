@@ -16,7 +16,7 @@ export class LightControlComponent implements OnInit {
   lightBulbList :LightBulbModel[];
   public cols: Observable<number>;
   
-  constructor(private lightSignalRService: LightSignalRService,
+  constructor(public lightSignalRService: LightSignalRService,
     private observableMedia: ObservableMedia) {
     this.subscribeToEvents();   
    }

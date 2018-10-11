@@ -54,7 +54,7 @@ export class LightStatisticBoardComponent  implements AfterViewInit {
     });
   }
 
-  constructor(private lightSignalRService: LightSignalRService) { 
+  constructor(public lightSignalRService: LightSignalRService) { 
 }
 
   numbers = timer(30000,30000);

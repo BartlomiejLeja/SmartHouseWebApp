@@ -10,7 +10,7 @@ import {LightBulbModel} from '../models/lightBulb.model';
 })
 export class ToolbarComponent implements OnInit {
   public isSideNavOpen:boolean;
-  constructor(private sidenav: SidenavService,
+  constructor(public sidenav: SidenavService,
     private lightSignalRService: LightSignalRService) {
       this.isSideNavOpen=false;
       this.lightSignalRService.StartSignalRConnection();}
