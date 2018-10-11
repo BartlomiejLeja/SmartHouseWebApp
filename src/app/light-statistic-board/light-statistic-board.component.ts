@@ -14,34 +14,38 @@ import {LightBulbModel} from '../models/lightBulb.model';
 export class LightStatisticBoardComponent  implements AfterViewInit {
   private subscription: Subscription;
   PieChart:any;
+  chartTabel: Array<any>;
    minutsOn:number =this.lightSignalRService.lightBulbList[0].BulbOffTimeInMinutesPerDay;
    minutsOff:number =this.lightSignalRService.lightBulbList[0].BulbOnTimeInMinutesPerDay;
 
   ngAfterViewInit(): void {
-  this.graf()
+    this.chartTabel = new Array();
+    this.lightSignalRService.lightBulbList.forEach(element => {
+    this.graf(element.Name,element.BulbOffTimeInMinutesPerDay,element.BulbOnTimeInMinutesPerDay,element.Name)
+    this.chartTabel.push(this.PieChart);
+   }); 
+   
   }
    
-  graf():void{
-    this.PieChart = new Chart('pieChart',{
+  graf(name : string,bulbOnTimeInMinutesPerDay:
+     number, bulbOffTimeInMinutesPerDay: number, title: string):any{
+    this.PieChart = new Chart(name,{
       type:'pie',
       data:{
         labels:["On","Off"],
         datasets:[{
           label:'# of Votes',
-          data:[this.lightSignalRService.lightBulbList[0].BulbOnTimeInMinutesPerDay,this.lightSignalRService.lightBulbList[0].BulbOffTimeInMinutesPerDay],
+          data:[bulbOnTimeInMinutesPerDay,bulbOffTimeInMinutesPerDay],
           backgroundColor:[
             'rgba(255,99,132,1)',
             'rgba(54,162,235,1)',
-            'rgba(255,206,86,1)',
-            'rgba(255,175,96,1)',
-            'rgba(255,145,186,1)',
           ],
           borderWidth:1
         }]
       },
       options:{
         title:{
-          text:"Pie Chart",
+          text: title,
           display: true
         },
         responsive: false,
@@ -49,11 +53,8 @@ export class LightStatisticBoardComponent  implements AfterViewInit {
       }
     });
   }
-   $counter: Observable<any>;
-  
 
-  constructor(private lightSignalRService: LightSignalRService) {
-    
+  constructor(private lightSignalRService: LightSignalRService) { 
 }
 
   numbers = timer(30000,30000);
@@ -67,13 +68,14 @@ export class LightStatisticBoardComponent  implements AfterViewInit {
 
 counter():void
 {
-  if(this.lightSignalRService.lightBulbList[0].LightStatus)
+  this.chartTabel.forEach((element,index) => {
+    if(this.lightSignalRService.lightBulbList[index].LightStatus)
   {
-    this.PieChart.data.datasets[0].data[1] =--this.lightSignalRService.lightBulbList[0].BulbOffTimeInMinutesPerDay;
-    this.PieChart.data.datasets[0].data[0]= ++this.lightSignalRService.lightBulbList[0].BulbOnTimeInMinutesPerDay;
-    this.PieChart.update();
+    element.data.datasets[0].data[1] =--this.lightSignalRService.lightBulbList[index].BulbOffTimeInMinutesPerDay;
+    element.data.datasets[0].data[0]= ++this.lightSignalRService.lightBulbList[index].BulbOnTimeInMinutesPerDay;
+    element.update();
   }
-
+  });
 }
   ngOnDestroy() {
     this.subscription.unsubscribe();

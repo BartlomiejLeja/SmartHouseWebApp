@@ -1,4 +1,7 @@
-<div>
-  <h2 style="background-color: rgba(255, 145,186, 1);font-size:2rem"> Pie chart</h2>
-<canvas id="pieChart" width="650" height="273" class="chartjs-render-monitor"      ></canvas>
+<div class="lightContainer"  fxLayout="row" fxLayout.xs="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="center">
+
+  <div *ngFor="let pieChart of lightSignalRService.lightBulbList">
+    <canvas id="{{pieChart.Name}}" width="350" height="273" class="chartjs-render-monitor"></canvas>
+  </div>
+
 </div>
