@@ -24,6 +24,8 @@ import { LightControlComponent } from './light-control/light-control.component';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { LightStatisticBoardComponent } from './light-statistic-board/light-statistic-board.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,8 @@ import { LightStatisticBoardComponent } from './light-statistic-board/light-stat
       { path: '', redirectTo: 'lightcontrol', pathMatch: 'full' },
       { path: 'lightcontrol', component: LightControlComponent },
       { path: 'lightStatisticBoard', component: LightStatisticBoardComponent },
-    ])
+    ]),
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [SidenavService,LightSignalRService, LightService],
   bootstrap: [AppComponent]
