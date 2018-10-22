@@ -50,7 +50,6 @@ export class LightControlComponent implements OnInit {
 
   private subscribeToEvents(): void {
    this.lightSignalRService.statusOfLightListChanged.subscribe(()=>{
-   console.log(this.lightSignalRService.lightBulbList);
    this.lightBulbList = this.lightSignalRService.lightBulbList;
   })}
 }

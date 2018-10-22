@@ -21,14 +21,19 @@ export class LightStatisticBoardComponent  implements AfterViewInit {
   ngAfterViewInit(): void {
     this.chartTabel = new Array();
     this.lightSignalRService.lightBulbList.forEach(element => {
-    this.graf(element.Name,element.BulbOffTimeInMinutesPerDay,element.BulbOnTimeInMinutesPerDay,element.Name)
-    this.chartTabel.push(this.PieChart);
+      
+      if(element.LightStatus==true){
+       var dateOn = Date.parse(element.TimeOn.toString());
+       element.BulbOnTimeInMinutesPerDay  += (new Date().getTime() -  dateOn)/60000;
+       element.BulbOffTimeInMinutesPerDay -=(new Date().getTime() -  dateOn)/60000;
+      } 
+
+    this.PieChartsSeter(element.Name,element.BulbOnTimeInMinutesPerDay,element.BulbOffTimeInMinutesPerDay,element.Name)
    }); 
-   
   }
    
-  graf(name : string,bulbOnTimeInMinutesPerDay:
-     number, bulbOffTimeInMinutesPerDay: number, title: string):any{
+  PieChartsSeter(name : string,bulbOnTimeInMinutesPerDay:
+    number, bulbOffTimeInMinutesPerDay: number, title: string):any{
     this.PieChart = new Chart(name,{
       type:'pie',
       data:{
@@ -37,8 +42,8 @@ export class LightStatisticBoardComponent  implements AfterViewInit {
           label:'# of Votes',
           data:[bulbOnTimeInMinutesPerDay,bulbOffTimeInMinutesPerDay],
           backgroundColor:[
-            'rgba(255,99,132,1)',
             'rgba(54,162,235,1)',
+            'rgba(255,99,132,1)',
           ],
           borderWidth:1
         }]
@@ -52,12 +57,13 @@ export class LightStatisticBoardComponent  implements AfterViewInit {
       //  display:true,
       }
     });
+    this.chartTabel.push(this.PieChart);
   }
 
   constructor(public lightSignalRService: LightSignalRService) { 
 }
 
-  numbers = timer(30000,30000);
+  numbers = timer(60000,60000);
   
   ngOnInit() {
    this.subscription= this.numbers.subscribe(
@@ -71,8 +77,8 @@ counter():void
   this.chartTabel.forEach((element,index) => {
     if(this.lightSignalRService.lightBulbList[index].LightStatus)
   {
-    element.data.datasets[0].data[1] =--this.lightSignalRService.lightBulbList[index].BulbOffTimeInMinutesPerDay;
-    element.data.datasets[0].data[0]= ++this.lightSignalRService.lightBulbList[index].BulbOnTimeInMinutesPerDay;
+    element.data.datasets[0].data[0] =  ++ this.lightSignalRService.lightBulbList[index].BulbOnTimeInMinutesPerDay ;
+    element.data.datasets[0].data[1] =  -- this.lightSignalRService.lightBulbList[index].BulbOffTimeInMinutesPerDay;
     element.update();
   }
   });
@@ -80,5 +86,4 @@ counter():void
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
-
 }

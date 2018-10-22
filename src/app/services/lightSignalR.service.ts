@@ -1,17 +1,17 @@
 import { Injectable,Component, OnInit, EventEmitter } from '@angular/core';
 import { HubConnection, IHubConnectionOptions } from '@aspnet/signalr';
 import {LightBulbModel} from '../models/lightBulb.model';
+import { DatePipe } from '@angular/common';
 
 @Injectable()
 export class LightSignalRService implements OnInit {
     public hubConnection: HubConnection;
     
-   // public statusOfLightChaned: EventEmitter < Boolean > ;  
    public statusOfLightListChanged: EventEmitter < LightBulbModel[]> ;  
 
-    public isLightOn:boolean;
     public lightNumber : number;
     lightBulbList :LightBulbModel[];
+    lightBulb :LightBulbModel;
 
      constructor(){
       this.statusOfLightListChanged = new EventEmitter <LightBulbModel[] > ();
@@ -24,22 +24,22 @@ export class LightSignalRService implements OnInit {
      {
         this.hubConnection.invoke('ChangeLightState',statusOfLightBulb,lightBulbId);
      }
+
      public StartSignalRConnection(): void{
-        this.hubConnection = new HubConnection('https://signalirserver20180827052120.azurewebsites.net/LightApp');
+     this.hubConnection = new HubConnection('https://signalirserver20181021093049.azurewebsites.net/LightApp');
+      // this.hubConnection = new HubConnection('http://localhost:51690/LightApp');
        
         this.hubConnection.on('StatisticData',(timeOn:number,timeOff:number)=>{
           console.log('Time on '+timeOn + 'Time off ' + timeOff);
         });
 
-        this.hubConnection.on('ChangeLightState',(isOn:boolean,lightNumber: number)=>{
-            this.isLightOn=isOn; 
-        })
-
         this.hubConnection.on('SendLightState', 
-            (lightID:number,lightStatus:boolean)=>{
+            (lightID:number,lightStatus:boolean,dateTime:Date,serializedLightBulbModel: string)=>{
+            this.lightBulb=JSON.parse(serializedLightBulbModel);
             console.log('Light number is ' + lightID+'lightStatus is' + lightStatus)
-            this.lightBulbList.forEach((lightBulb) => {if(lightBulb.ID==lightID){
-                lightBulb.LightStatus=lightStatus;
+            this.lightBulbList.forEach((lightBulb) => {
+                if(lightBulb.ID==lightID){
+                    Object.assign(lightBulb,this.lightBulb)
                 };
             })
         });
@@ -48,13 +48,11 @@ export class LightSignalRService implements OnInit {
             this.lightBulbList=JSON.parse(lightCollection);
             console.log( this.lightBulbList);
             this.statusOfLightListChanged.emit(this.lightBulbList);
-
         });
 
         this.hubConnection.start()
               .then(() => {
                   console.log('Hub connection started')
-                  this.hubConnection.invoke('CheckStatusOfLights',true);
               })
               .catch(err => {
                   console.log('Error while establishing connection') 
