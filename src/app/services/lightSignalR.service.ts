@@ -27,8 +27,7 @@ export class LightSignalRService implements OnInit {
 
      public StartSignalRConnection(): void{
      this.hubConnection = new HubConnection('https://signalirserver20181021093049.azurewebsites.net/LightApp');
-      // this.hubConnection = new HubConnection('http://localhost:51690/LightApp');
-       
+    
         this.hubConnection.on('StatisticData',(timeOn:number,timeOff:number)=>{
           console.log('Time on '+timeOn + 'Time off ' + timeOff);
         });
