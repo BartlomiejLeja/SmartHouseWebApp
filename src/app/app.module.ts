@@ -26,6 +26,7 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 import { LightStatisticBoardComponent } from './light-statistic-board/light-statistic-board.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { OptionsSectionComponent } from './options-section/options-section.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { environment } from '../environments/environment';
     LightControlComponent,
     SidenavComponent,
     ToolbarComponent,
-    LightStatisticBoardComponent
+    LightStatisticBoardComponent,
+    OptionsSectionComponent
   ],
   imports: [
     BrowserModule,
@@ -56,6 +58,7 @@ import { environment } from '../environments/environment';
       { path: '', redirectTo: 'lightcontrol', pathMatch: 'full' },
       { path: 'lightcontrol', component: LightControlComponent },
       { path: 'lightStatisticBoard', component: LightStatisticBoardComponent },
+      {path: 'setings', component: OptionsSectionComponent}
     ]),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],

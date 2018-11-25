@@ -7,14 +7,17 @@ import { DatePipe } from '@angular/common';
 export class LightSignalRService implements OnInit {
     public hubConnection: HubConnection;
     
-   public statusOfLightListChanged: EventEmitter < LightBulbModel[]> ;  
+   public statusOfLightListChanged: EventEmitter <LightBulbModel[]>;  
+   public isAutomaticLightControlSystsemOn : EventEmitter <boolean>; 
 
     public lightNumber : number;
     lightBulbList :LightBulbModel[];
     lightBulb :LightBulbModel;
+    isAutomaticControlSystsemOn:boolean;
 
      constructor(){
-      this.statusOfLightListChanged = new EventEmitter <LightBulbModel[] > ();
+      this.statusOfLightListChanged = new EventEmitter<LightBulbModel[]>();
+      this.isAutomaticLightControlSystsemOn = new EventEmitter<boolean>();
      }
 
      ngOnInit() {
@@ -25,8 +28,14 @@ export class LightSignalRService implements OnInit {
         this.hubConnection.invoke('ChangeLightState',statusOfLightBulb,lightBulbId);
      }
 
+     public enableAutomaticallyLightsControlSystem(isOn: boolean) : void
+     {
+        this.hubConnection.invoke('IsAutomaticallyLightsControlSystemOn',isOn);
+     }
+
      public StartSignalRConnection(): void{
-     this.hubConnection = new HubConnection('https://signalirserver20181021093049.azurewebsites.net/LightApp');
+      this.hubConnection = new HubConnection('https://signalirserver20181021093049.azurewebsites.net/LightApp');
+   // this.hubConnection = new HubConnection('http://localhost:51690/LightApp');
     
         this.hubConnection.on('StatisticData',(timeOn:number,timeOff:number)=>{
           console.log('Time on '+timeOn + 'Time off ' + timeOff);
@@ -49,6 +58,12 @@ export class LightSignalRService implements OnInit {
             this.statusOfLightListChanged.emit(this.lightBulbList);
         });
 
+        this.hubConnection.on('IsAutomaticallyLightsControlSystemOn',(isOn:boolean)=>{
+            console.log( isOn);
+            this.isAutomaticControlSystsemOn=isOn;
+            this.isAutomaticLightControlSystsemOn.emit(this.isAutomaticControlSystsemOn);
+        });
+        
         this.hubConnection.start()
               .then(() => {
                   console.log('Hub connection started')

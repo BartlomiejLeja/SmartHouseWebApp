@@ -22,10 +22,13 @@ export class LightStatisticBoardComponent  implements AfterViewInit {
     this.chartTabel = new Array();
     this.lightSignalRService.lightBulbList.forEach(element => {
       
+      //TODO here we should assine to OnTime dataOn
       if(element.LightStatus==true){
        var dateOn = Date.parse(element.TimeOn.toString());
        element.BulbOnTimeInMinutesPerDay  += (new Date().getTime() -  dateOn)/60000;
        element.BulbOffTimeInMinutesPerDay -=(new Date().getTime() -  dateOn)/60000;
+       //TODO here we should assine to OnTime dataOn Check if works
+       element.TimeOn =new Date();
       } 
 
     this.PieChartsSeter(element.Name,element.BulbOnTimeInMinutesPerDay,element.BulbOffTimeInMinutesPerDay,element.Name)
