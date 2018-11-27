@@ -38,7 +38,7 @@ export class LightSignalRService implements OnInit {
    // this.hubConnection = new HubConnection('http://localhost:51690/LightApp');
     
         this.hubConnection.on('StatisticData',(timeOn:number,timeOff:number)=>{
-          console.log('Time on '+timeOn + 'Time off ' + timeOff);
+          console.log('Time on '+timeOn + 'Time off '+ timeOff);
         });
 
         this.hubConnection.on('SendLightState', 
